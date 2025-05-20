@@ -14,7 +14,22 @@ body {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
+.media-list {
+  list-style: none;
+  padding: 0;
+  margin: 2rem auto;
+  max-width: 600px;
+}
 
+.media-item {
+  font-family: 'Open Sans', sans-serif; /* Different from Jacquard */
+  background-color: #1f1f2e;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
 .main-title {
   font-size: 6.5rem;
   text-align: center;

@@ -10,18 +10,21 @@ function App() {
     completed: false,
   });
 
-  useEffect(() => {
-    fetch('http://localhost:5000/media')
-      .then((res) => res.json())
-      .then((data) => setMedia(data))
-      .catch((err) => console.error('Error fetching media:', err));
-  }, []);
+ useEffect(() => {
+  fetch('http://localhost:5000/api/media')
+    .then((res) => {
+      console.log('Response status:', res.status);
+      return res.json();
+    })
+    .then((data) => setMedia(data))
+    .catch((err) => console.error('Error fetching media:', err));
+}, []);
 
   
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch('http://localhost:5000/media', {
+    const res = await fetch('http://localhost:5000/api/media', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
@@ -70,14 +73,14 @@ function App() {
         <button type="submit">Add</button>
       </form>
 
-      <ul>
-        {media.map((item) => (
-          <li key={item._id}>
-            <strong>{item.title}</strong> ({item.type}) - {item.completed ? '✅' : '❌'}
-            <p>{item.notes}</p>
-          </li>
-        ))}
-      </ul>
+      <ul className="media-list">
+  {     media.map((item) => (
+        <li key={item._id} className="media-item">
+        <strong>{item.title}</strong> ({item.type}) - {item.completed ? '✅' : '❌'}
+        <p>{item.notes}</p>
+        </li>
+  ))}
+    </ul>
     </div>
   );
 }
