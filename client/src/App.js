@@ -20,7 +20,27 @@ function App() {
     .catch((err) => console.error('Error fetching media:', err));
 }, []);
 
-  
+const toggleCompleted = async (id) => {
+  const item = media.find((m) => m._id === id);
+  const updatedItem = { ...item, completed: !item.completed };
+
+  const res = await fetch(`http://localhost:5000/api/media/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updatedItem),
+  });
+
+  const data = await res.json();
+  setMedia(media.map((m) => (m._id === id ? data : m)));
+};  
+
+const deleteMedia = async (id) => {
+  await fetch(`http://localhost:5000/api/media/${id}`, {
+    method: 'DELETE',
+  });
+
+  setMedia(media.filter((item) => item._id !== id));
+};
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -76,7 +96,11 @@ function App() {
       <ul className="media-list">
   {     media.map((item) => (
         <li key={item._id} className="media-item">
-        <strong>{item.title}</strong> ({item.type}) - {item.completed ? '✅' : '❌'}
+        <strong>{item.title}</strong> ({item.type}) -
+        <button onClick={() => toggleCompleted(item._id)}>
+          {item.completed ? '✅' : '❌'}
+        </button>
+        <button onClick={() => deleteMedia(item._id)}>🗑️</button>
         <p>{item.notes}</p>
         </li>
   ))}
