@@ -9,6 +9,8 @@ function App() {
     notes: '',
     completed: false,
   });
+const [typeFilter, setTypeFilter] = useState('all');
+const [completedFilter, setCompletedFilter] = useState('all');
 
  useEffect(() => {
   fetch('http://localhost:5000/api/media')
@@ -41,6 +43,14 @@ const deleteMedia = async (id) => {
 
   setMedia(media.filter((item) => item._id !== id));
 };
+const filteredMedia = media.filter((item) => {
+    const typeMatch = typeFilter === 'all' || item.type === typeFilter;
+    const completedMatch =
+      completedFilter === 'all' ||
+      (completedFilter === 'true' && item.completed) ||
+      (completedFilter === 'false' && !item.completed);
+    return typeMatch && completedMatch;
+  });
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -53,7 +63,7 @@ const deleteMedia = async (id) => {
     const newMedia = await res.json();
     setMedia([newMedia, ...media]);
 
-    // Reset form
+   
     setForm({
       type: 'movie',
       title: '',
@@ -92,9 +102,29 @@ const deleteMedia = async (id) => {
 
         <button type="submit">Add</button>
       </form>
+      <div className="filter-container">
+      <label className="filter-label">
+          Type:
+          <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
+            <option value="all">All</option>
+            <option value="movie">Movie</option>
+            <option value="book">Book</option>
+            <option value="game">Game</option>
+          </select>
+        </label>
 
+        <label className="filter-label">
+          Completed:
+          <select value={completedFilter} onChange={(e) => setCompletedFilter(e.target.value)}>
+            <option value="all">All</option>
+            <option value="true">✅ Completed</option>
+            <option value="false">❌ Not Completed</option>
+          </select>
+        </label>
+      </div>
       <ul className="media-list">
-  {     media.map((item) => (
+        {filteredMedia.map((item) => (
+    
         <li key={item._id} className="media-item">
         <strong>{item.title}</strong> ({item.type}) -
         <button onClick={() => toggleCompleted(item._id)}>
